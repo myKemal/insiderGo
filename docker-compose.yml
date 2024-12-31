@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  api:
+    build:
+      context: .
+    container_name: api_service
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - TEMP_STORAGE=REDIS #   In-Memory için MEMORY
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7.0
+    container_name: redis_service
+    ports:
+      - "6379:6379"

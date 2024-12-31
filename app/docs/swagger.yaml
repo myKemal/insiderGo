@@ -1,0 +1,126 @@
+basePath: /
+definitions:
+  dtos.MessageDTO:
+    properties:
+      message_content:
+        type: string
+      recipient_phone_number:
+        type: string
+      sending_status:
+        type: string
+    type: object
+  dtos.TokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  model.TempListPayload:
+    properties:
+      limit:
+        type: integer
+      skip:
+        type: integer
+    type: object
+host: localhost:8090
+info:
+  contact: {}
+  description: This is a MongoAPI project for managing messages.
+  title: insiderGo Project
+  version: "1.0"
+paths:
+  /generate-token:
+    post:
+      description: Generates a JWT token for testing or authentication
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.TokenResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Generate JWT Token
+      tags:
+      - Auth
+  /temp/getList:
+    post:
+      consumes:
+      - application/json
+      description: Retrieve keys from TempMemory using skip and limit
+      parameters:
+      - description: Pagination parameters
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.TempListPayload'
+      - description: <token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get keys with pagination (POST)
+      tags:
+      - TempMemory
+  /unsent-messages:
+    get:
+      description: Get all messages with a sending status of "not_sent"
+      parameters:
+      - description: <token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.MessageDTO'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Fetch unsent messages
+      tags:
+      - Messages
+swagger: "2.0"
