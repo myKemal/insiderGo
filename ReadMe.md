@@ -1,4 +1,4 @@
-# MongoAPI Project
+# InsiderGo Project
 
 This project is a Go-based RESTful API application with MongoDB integration. It includes Swagger documentation for easy API exploration and Docker support for containerized deployment.
 
