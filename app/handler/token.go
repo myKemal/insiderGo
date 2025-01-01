@@ -2,8 +2,8 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/myKemal/mongoApi/app/dtos"
-	"github.com/myKemal/mongoApi/app/services"
+	"github.com/myKemal/insiderGo/app/dtos"
+	"github.com/myKemal/insiderGo/app/services"
 	"net/http"
 )
 

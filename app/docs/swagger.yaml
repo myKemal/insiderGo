@@ -24,7 +24,7 @@ definitions:
 host: localhost:8090
 info:
   contact: {}
-  description: This is a MongoAPI project for managing messages.
+  description: This is a insiderGo task project for managing messages.
   title: insiderGo Project
   version: "1.0"
 paths:
@@ -47,11 +47,115 @@ paths:
       summary: Generate JWT Token
       tags:
       - Auth
+  /instance/unsent-messages:
+    get:
+      description: Retrieve a list of unsent messages from the system
+      parameters:
+      - description: <token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.MessageDTO'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get unsent messages
+      tags:
+      - Instance
+  /task/start:
+    post:
+      description: Starts the periodic task service to process tasks at regular intervals
+      parameters:
+      - description: <token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Start the periodic task service
+      tags:
+      - PeriodicTask
+  /task/stop:
+    post:
+      description: Stops the periodic task service and halts task processing
+      parameters:
+      - description: <token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Stop the periodic task service
+      tags:
+      - PeriodicTask
+  /temp/getAllList:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve data from TempMemory
+      parameters:
+      - description: <token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get keys with pagination (GET)
+      tags:
+      - TempMemory
   /temp/getList:
     post:
       consumes:
       - application/json
-      description: Retrieve keys from TempMemory using skip and limit
+      description: Retrieve data from TempMemory using skip and limit
       parameters:
       - description: Pagination parameters
         in: body
@@ -122,5 +226,5 @@ paths:
       - BearerAuth: []
       summary: Fetch unsent messages
       tags:
-      - Messages
+      - DB
 swagger: "2.0"

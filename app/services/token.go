@@ -3,7 +3,7 @@ package services
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/myKemal/mongoApi/app/config"
+	"github.com/myKemal/insiderGo/app/config"
 	"time"
 )
 

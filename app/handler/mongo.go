@@ -2,14 +2,14 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/myKemal/mongoApi/app/dtos"
+	"github.com/myKemal/insiderGo/app/dtos"
 	"net/http"
 )
 
 // FetchUnsentMessages godoc
 // @Summary Fetch unsent messages
 // @Description Get all messages with a sending status of "not_sent"
-// @Tags Messages
+// @Tags DB
 // @Produce json
 // @Security BearerAuth
 // @Success 200 {array} dtos.MessageDTO

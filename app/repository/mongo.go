@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"github.com/myKemal/mongoApi/app/daos"
+	"github.com/myKemal/insiderGo/app/daos"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"

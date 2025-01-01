@@ -3,19 +3,31 @@ services:
   api:
     build:
       context: .
-    container_name: api_service
+    container_name: insiderGo
     ports:
-      - "8080:8080"
+      - "8090:8090"
     environment:
-      - PORT=8080
-      - TEMP_STORAGE=REDIS #   In-Memory için MEMORY
+      - PORT=8090
+      - TEMP_STORAGE=REDIS # TEMP_STORAGE: REDIS veya INMEMORY
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-    depends_on:
-      - redis
+    networks:
+      - app_network
 
   redis:
     image: redis:7.0
     container_name: redis_service
     ports:
       - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    #restart: unless-stopped
+    networks:
+      - app_network
+
+networks:
+  app_network:
+
+volumes:
+  redis_data:

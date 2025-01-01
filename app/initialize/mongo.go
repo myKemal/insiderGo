@@ -3,8 +3,8 @@ package initialize
 import (
 	"context"
 	"fmt"
-	"github.com/myKemal/mongoApi/app/config"
-	"github.com/myKemal/mongoApi/app/repository"
+	"github.com/myKemal/insiderGo/app/config"
+	"github.com/myKemal/insiderGo/app/repository"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"

@@ -2,13 +2,13 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/myKemal/mongoApi/app/model"
+	"github.com/myKemal/insiderGo/app/model"
 	"net/http"
 )
 
-// GetKeys godoc
+// GetList godoc
 // @Summary Get keys with pagination (POST)
-// @Description Retrieve keys from TempMemory using skip and limit
+// @Description Retrieve data from TempMemory using skip and limit
 // @Tags TempMemory
 // @Accept json
 // @Produce json
@@ -18,7 +18,7 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /temp/getList [post]
 // @Param Authorization header string true "<token>"
-func (h *Handler) GetKeys(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetList(w http.ResponseWriter, r *http.Request) {
 
 	var reqBody model.TempListPayload
 	if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
@@ -34,6 +34,32 @@ func (h *Handler) GetKeys(w http.ResponseWriter, r *http.Request) {
 	}
 
 	keys, err := h.Temp.List(reqBody.Skip, reqBody.Limit)
+	if err != nil {
+		http.Error(w, "Failed to retrieve keys", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(keys)
+	if err != nil {
+		return
+	}
+}
+
+// GetAllList godoc
+// @Summary Get keys with pagination (GET)
+// @Description Retrieve data from TempMemory
+// @Tags TempMemory
+// @Accept json
+// @Produce json
+// @Success 200 {array} string
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /temp/getAllList [get]
+// @Param Authorization header string true "<token>"
+func (h *Handler) GetAllList(w http.ResponseWriter, r *http.Request) {
+
+	keys, err := h.Temp.AllList()
 	if err != nil {
 		http.Error(w, "Failed to retrieve keys", http.StatusInternalServerError)
 		return

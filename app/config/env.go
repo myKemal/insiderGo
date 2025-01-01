@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -41,12 +40,19 @@ func GetPort() string {
 		port = os.Getenv("PORT")
 	}
 
-	return fmt.Sprintf("%s", port)
+	return port
 }
 
 func GetSecret() string {
 
 	secrets := strings.TrimSpace(os.Getenv("SECRETKEY"))
 
-	return fmt.Sprintf("%s", secrets)
+	return secrets
+}
+
+func GetWebHookURL() string {
+
+	secrets := strings.TrimSpace(os.Getenv("WEBHOOK_URL"))
+
+	return secrets
 }

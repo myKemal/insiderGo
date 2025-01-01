@@ -4,17 +4,18 @@ import (
 	"time"
 )
 
-type TempMemoryRepo interface {
+type TempMemoryRepository interface {
 	Set(key string, value string, expiration time.Duration) error
 	Get(key string) (string, error)
-	List(skip, limit int) ([]string, error)
+	List(skip, limit int) ([]map[string]interface{}, error)
+	AllList() ([]map[string]interface{}, error)
 }
 
 type tempRepositoryImpl struct {
-	Temp TempMemoryRepo
+	Temp TempMemoryRepository
 }
 
-func NewTempMemory(temp TempMemoryRepo) TempMemoryRepo {
+func NewTempMemory(temp TempMemoryRepository) TempMemoryRepository {
 	return &tempRepositoryImpl{Temp: temp}
 }
 
@@ -26,6 +27,10 @@ func (r *tempRepositoryImpl) Get(key string) (string, error) {
 	return r.Temp.Get(key)
 }
 
-func (r *tempRepositoryImpl) List(skip, limit int) ([]string, error) {
+func (r *tempRepositoryImpl) List(skip, limit int) ([]map[string]interface{}, error) {
 	return r.Temp.List(skip, limit)
+}
+
+func (r *tempRepositoryImpl) AllList() ([]map[string]interface{}, error) {
+	return r.Temp.AllList()
 }

@@ -1,6 +1,8 @@
 # InsiderGo Project
 
-This project is a Go-based RESTful API application with MongoDB integration. It includes Swagger documentation for easy API exploration and Docker support for containerized deployment.
+This project is a Go-based  API application with MongoDB,Redis/InMemory integration.
+It includes Swagger documentation for easy API exploration and Docker support for containerized deployment.
+Also if you need to use the cross compilation option for Go use  can be examined makefile
 
 ## Features
 - MongoDB integration for storing and fetching messages.
@@ -19,63 +21,57 @@ This project is a Go-based RESTful API application with MongoDB integration. It 
    cd insiderGo
    ```
 
-2. **Create a .env File**
-   Create a `.env` file in the project root with the following content:
-   ```env
-   MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/<database>?retryWrites=true&w=majority
-   PORT=8080
-   ```
-   Replace `<username>`, `<password>`, and `<database>` with your MongoDB Atlas credentials.
-
-3. **Build and Run the Docker Container**
+2**Build and Run Methods**
    ```bash
-   docker build -t mongoapi .
-   docker run -p 8080:8080 --env-file .env mongoapi
+   make compose-up
+   ```
+   ```bash
+   make help
    ```
 
-4. **Access the Application**
-    - API Base URL: `http://localhost:8080`
-    - Swagger Documentation: `http://localhost:8080/swagger/`
+3**Access the Application**
+    - API Base URL: `http://localhost:8090`
+    - Swagger Documentation: `http://localhost:8090/swagger/`
 
-## Swagger Documentation
-
-Swagger is integrated into the project for exploring and testing API endpoints.
-
-### Access Swagger UI
-
-1. Start the application as described above.
-2. Open your browser and navigate to `http://localhost:8080/swagger/`.
-3. Use the Swagger UI to test and explore the API endpoints.
-
-### Example Endpoints
-
-- **GET /unsent-messages**: Fetch all messages with a sending status of `not_sent`.
-
+   
 ## Project Structure
 
 ```plaintext
-mongoApi/
-├── app/
+insiderGo/
+├── app/                # Core application code and components
+│   ├── config/         # Configuration files (e.g., reading environment variables)
+│   ├── daos/           # Data Access Objects: structures representing database entities
+│   ├── docs/           # Auto-generated Swagger documentation files
+│   ├── dtos/           # Data Transfer Objects: structures for API input/output
+│   ├── handler/        # HTTP handler functions: business logic for API endpoints       
+│   ├── initialize/     # Initialization logic: setting up DB, cache, and other services         
+│   ├── model/          # Core models used across the application
+│   ├── repository/     # Repository layer for database and cache interactions
+│   ├── router/         # HTTP router configuration (e.g., defining API routes)
+│   ├── services/       # Business logic and reusable services
 │   ├── app.go
-│   ├── handler/
-│   │   ├── handler.go
-│   ├── repo/
-│   │   ├── repo.go
-│   ├── router/
-│   │   ├── router.go
-│   ├── daos/
-│   │   ├── message.go
-│   ├── dtos/
-│   │   ├── message.go
 ├── main.go
+├── docker-compose.override.yml     # Override file for Docker Compose (e.g.,choose temp memory as inMemory)
+├── docker-compose.yml
 ├── Dockerfile
 ├── go.mod
+├── Makefile                        # Automation of common tasks (e.g., build, run, test)
 └── README.md
 ```
 
-## Stopping the Application
-To stop the running container:
-```bash
-docker stop $(docker ps -q --filter ancestor=mongoapi)
-```
+### Future Improvements
+
+The following enhancements are planned or could be considered in the future:
+
+1. **Improved Performance:**
+    - When the unsent message list in the instance decrease below a certain limit, unsent messages can be retrieved from the DB.
+    - The period duration and the number of messages sent can be updated dynamically according to data such as the reading speed in the DB regarding the sending of 2 messages in 2 minutes, the statistical distribution of unsent data over time, etc.
+
+2. **Monitoring and Logging:**
+    - Integrate OpenTelemetry or Prometheus for distributed tracing and metric collection.
+    - Add structured logging with configurable levels (debug, info, warning, error).
+   
+3. **CI/CD Integration:**
+- Automate build, test, and deployment processes with GitHub Actions or GitLab CI/CD.
+
 

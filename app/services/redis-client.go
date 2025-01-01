@@ -28,17 +28,54 @@ func (r *RedisClient) Get(key string) (string, error) {
 	return r.Client.Get(redisCtx, key).Result()
 }
 
-func (r *RedisClient) List(skip, limit int) ([]string, error) {
+func (r *RedisClient) List(skip, limit int) ([]map[string]interface{}, error) {
 	keys, err := r.Client.Keys(redisCtx, "*").Result()
 	if err != nil {
 		return nil, err
 	}
+
 	if skip > len(keys) {
-		return []string{}, nil
+		return []map[string]interface{}{}, nil
 	}
 	if skip+limit > len(keys) {
 		limit = len(keys) - skip
 	}
+	keys = keys[skip : skip+limit]
 
-	return keys[skip : skip+limit], nil
+	var result []map[string]interface{}
+	for _, key := range keys {
+		value, err := r.Client.Get(redisCtx, key).Result()
+		if err != nil {
+			continue
+		}
+
+		result = append(result, map[string]interface{}{
+			"key":   key,
+			"value": value,
+		})
+	}
+
+	return result, nil
+}
+
+func (r *RedisClient) AllList() ([]map[string]interface{}, error) {
+	keys, err := r.Client.Keys(redisCtx, "*").Result()
+	if err != nil {
+		return nil, err
+	}
+
+	var result []map[string]interface{}
+	for _, key := range keys {
+		value, err := r.Client.Get(redisCtx, key).Result()
+		if err != nil {
+			continue
+		}
+
+		result = append(result, map[string]interface{}{
+			"key":   key,
+			"value": value,
+		})
+	}
+
+	return result, nil
 }

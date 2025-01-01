@@ -53,7 +53,7 @@ func (c *InMemoryClient) Get(key string) (string, error) {
 	return val.value, nil
 }
 
-func (s *InMemoryClient) List(skip, limit int) ([]string, error) {
+func (s *InMemoryClient) List(skip, limit int) ([]map[string]interface{}, error) {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
 
@@ -63,11 +63,60 @@ func (s *InMemoryClient) List(skip, limit int) ([]string, error) {
 	}
 
 	if skip > len(keys) {
-		return []string{}, nil
+		return []map[string]interface{}{}, nil
 	}
 	if skip+limit > len(keys) {
 		limit = len(keys) - skip
 	}
+	keys = keys[skip : skip+limit]
 
-	return keys[skip : skip+limit], nil
+	var result []map[string]interface{}
+	for _, key := range keys {
+		val, exists := s.data[key]
+		if !exists {
+			continue
+		}
+
+		if val.expiration > 0 && time.Now().Unix() > val.expiration {
+			delete(s.data, key)
+			continue
+		}
+
+		result = append(result, map[string]interface{}{
+			"key":   key,
+			"value": string(val.value),
+		})
+	}
+
+	return result, nil
+}
+
+func (s *InMemoryClient) AllList() ([]map[string]interface{}, error) {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
+
+	keys := make([]string, 0, len(s.data))
+	for key := range s.data {
+		keys = append(keys, key)
+	}
+
+	var result []map[string]interface{}
+	for _, key := range keys {
+		val, exists := s.data[key]
+		if !exists {
+			continue
+		}
+
+		if val.expiration > 0 && time.Now().Unix() > val.expiration {
+			delete(s.data, key)
+			continue
+		}
+
+		result = append(result, map[string]interface{}{
+			"key":   key,
+			"value": string(val.value),
+		})
+	}
+
+	return result, nil
 }

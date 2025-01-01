@@ -1,20 +1,25 @@
 package initialize
 
 import (
-	"github.com/myKemal/mongoApi/app/services"
+	"github.com/myKemal/insiderGo/app/services"
 	"os"
 
-	"github.com/myKemal/mongoApi/app/repository"
+	"github.com/myKemal/insiderGo/app/repository"
 )
 
-func Temp() (repository.TempMemoryRepo, error) {
-	storageType := os.Getenv("TEMP_STORAGE") // Set to "REDIS" or "MEMORY"
+func Temp() (repository.TempMemoryRepository, error) {
+	storageType := os.Getenv("TEMP_STORAGE") //  "REDIS" veya "INMEMORY"
 	switch storageType {
 	case "REDIS":
 		redisHost := os.Getenv("REDIS_HOST")
 		redisPort := os.Getenv("REDIS_PORT")
-		return services.NewRedisClient(redisHost + ":" + redisPort), nil
+		client := services.NewRedisClient(redisHost + ":" + redisPort)
+		return repository.NewTempMemory(client), nil
+	case "INMEMORY":
+		client := services.NewInMemoryClient()
+		return repository.NewTempMemory(client), nil
 	default:
-		return services.NewInMemoryClient(), nil
+		client := services.NewInMemoryClient()
+		return repository.NewTempMemory(client), nil
 	}
 }

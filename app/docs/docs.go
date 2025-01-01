@@ -44,9 +44,167 @@ const docTemplate = `{
                 }
             }
         },
+        "/instance/unsent-messages": {
+            "get": {
+                "description": "Retrieve a list of unsent messages from the system",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Instance"
+                ],
+                "summary": "Get unsent messages",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "\u003ctoken\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dtos.MessageDTO"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/task/start": {
+            "post": {
+                "description": "Starts the periodic task service to process tasks at regular intervals",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PeriodicTask"
+                ],
+                "summary": "Start the periodic task service",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "\u003ctoken\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/task/stop": {
+            "post": {
+                "description": "Stops the periodic task service and halts task processing",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PeriodicTask"
+                ],
+                "summary": "Stop the periodic task service",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "\u003ctoken\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/temp/getAllList": {
+            "get": {
+                "description": "Retrieve data from TempMemory",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "TempMemory"
+                ],
+                "summary": "Get keys with pagination (GET)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "\u003ctoken\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/temp/getList": {
             "post": {
-                "description": "Retrieve keys from TempMemory using skip and limit",
+                "description": "Retrieve data from TempMemory using skip and limit",
                 "consumes": [
                     "application/json"
                 ],
@@ -118,7 +276,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Messages"
+                    "DB"
                 ],
                 "summary": "Fetch unsent messages",
                 "parameters": [
@@ -206,7 +364,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "insiderGo Project",
-	Description:      "This is a MongoAPI project for managing messages.",
+	Description:      "This is a insiderGo task project for managing messages.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

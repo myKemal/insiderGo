@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/myKemal/mongoApi/app/services"
+	"github.com/myKemal/insiderGo/app/services"
 	"github.com/rs/cors"
 	"net/http"
 )
